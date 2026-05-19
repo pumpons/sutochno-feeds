@@ -12,4 +12,4 @@ segments:
       min_score: 4.5
     template: premium_gold
     # Optional limit for local testing. Remove or set 0 to process all matching rows.
-    limit: 0
+    limit: 50
