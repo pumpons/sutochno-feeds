@@ -1,0 +1,11 @@
+pyproject.toml
+src/__init__.py
+src/build_feed.py
+src/ingest.py
+src/pipeline.py
+src/render.py
+sutochno_feeds.egg-info/PKG-INFO
+sutochno_feeds.egg-info/SOURCES.txt
+sutochno_feeds.egg-info/dependency_links.txt
+sutochno_feeds.egg-info/requires.txt
+sutochno_feeds.egg-info/top_level.txt

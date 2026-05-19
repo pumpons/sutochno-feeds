@@ -1,0 +1,61 @@
+name: Daily feed rebuild
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # 03:00 MSK = 00:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-feeds
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Install Playwright Chromium
+        run: python -m playwright install --with-deps chromium
+
+      - name: Restore image cache (last gh-pages snapshot)
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: _gh_pages
+        continue-on-error: true
+
+      - name: Seed local images from prior cache
+        run: |
+          mkdir -p output/images
+          if [ -d _gh_pages/images ]; then
+            cp -a _gh_pages/images/. output/images/ || true
+            echo "Restored $(ls output/images | wc -l) cached images"
+          fi
+
+      - name: Run pipeline
+        run: python -m src.pipeline
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./output
+          keep_files: false   # full snapshot each run; old unused images are dropped
+          commit_message: "Daily rebuild ${{ github.run_number }}"

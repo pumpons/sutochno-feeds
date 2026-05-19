@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+data/*.db
+data/source.csv
+output/images/*
+output/feeds/*
+!output/images/.gitkeep
+!output/feeds/.gitkeep
+.DS_Store

@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: sutochno-feeds
+Version: 0.1.0
+Summary: Custom feed builder for sutochno.ru source feed
+Requires-Python: >=3.9
+Requires-Dist: requests>=2.32
+Requires-Dist: pyyaml>=6.0
+Requires-Dist: jinja2>=3.1
+Requires-Dist: playwright>=1.47
