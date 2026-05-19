@@ -1,8 +1,7 @@
 # Each segment produces one output feed at output/feeds/<id>.csv
 # Image renders go to output/images/ keyed by hash and referenced from the feed.
 
-base_image_url: "https://EXAMPLE.github.io/sutochno-feeds/images"
-# After deploy, replace EXAMPLE with the actual GitHub Pages host.
+base_image_url: "https://pumpons.github.io/sutochno-feeds/images"
 
 segments:
   - id: sochi-premium
