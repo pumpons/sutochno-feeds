@@ -128,7 +128,7 @@ def latest_run() -> dict | None:
 
 # ───────────────────────── meta lists ─────────────────────────
 
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=60)
 def load_meta(name: str) -> list[dict]:
     try:
         r = requests.get(f"{META_BASE_URL}/{name}.json", timeout=15)
@@ -199,6 +199,7 @@ def main() -> None:
         if st.button("🔄 Обновить", help="Перечитать состояние"):
             fetch_segments_file.clear()
             latest_run.clear()
+            load_meta.clear()
             st.rerun()
 
     st.divider()
