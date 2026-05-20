@@ -42,6 +42,16 @@ def select_rows(conn: sqlite3.Connection, flt: dict, limit: int = 0) -> list[sql
     if (min_price := flt.get("min_price")) is not None:
         where.append("price >= ?")
         params.append(min_price)
+    if stars := flt.get("stars_in"):
+        placeholders = ",".join("?" for _ in stars)
+        where.append(f"star_rating IN ({placeholders})")
+        params.extend(stars)
+    if amens := flt.get("amenities_any"):
+        # Any-of match via OR of LIKE per amenity. Facilities are ";"-joined strings;
+        # we surround the column with ";" so a token can match either side.
+        likes = " OR ".join("(';' || facilities || ';') LIKE ?" for _ in amens)
+        where.append(f"({likes})")
+        params.extend(f"%;{a};%" for a in amens)
 
     sql = "SELECT * FROM properties"
     if where:

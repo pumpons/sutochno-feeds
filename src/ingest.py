@@ -2,14 +2,18 @@
 from __future__ import annotations
 
 import csv
+import json
 import re
 import sqlite3
+from collections import Counter
 from pathlib import Path
 
 import requests
 
+ROOT = Path(__file__).resolve().parent.parent
 SOURCE_URL = "https://static.sutochno.ru/doc/files/xml/yrl_searchapp_hotels.csv"
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = ROOT / "data"
+META_DIR = ROOT / "output" / "meta"
 SOURCE_CSV = DATA_DIR / "source.csv"
 DB_PATH = DATA_DIR / "feeds.db"
 
@@ -102,6 +106,52 @@ def load_csv_into_db(csv_path: Path = SOURCE_CSV, db_path: Path = DB_PATH) -> in
     return rows
 
 
+def export_meta(db_path: Path = DB_PATH) -> None:
+    """Export filter-helper JSON files: city list, amenity list, star list — with counts.
+    Consumed by the UI to populate dropdowns from real data."""
+    META_DIR.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(db_path)
+
+    cities = [
+        {"name": name, "count": n}
+        for name, n in conn.execute(
+            "SELECT destination, COUNT(*) FROM properties "
+            "WHERE destination IS NOT NULL AND destination != '' "
+            "GROUP BY destination ORDER BY COUNT(*) DESC"
+        ).fetchall()
+    ]
+    (META_DIR / "cities.json").write_text(
+        json.dumps(cities, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    fac_counter: Counter[str] = Counter()
+    for (raw,) in conn.execute(
+        "SELECT facilities FROM properties WHERE facilities IS NOT NULL AND facilities != ''"
+    ):
+        for piece in raw.split(";"):
+            piece = piece.strip()
+            if piece:
+                fac_counter[piece] += 1
+    amenities = [{"name": n, "count": c} for n, c in fac_counter.most_common()]
+    (META_DIR / "amenities.json").write_text(
+        json.dumps(amenities, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    stars = [
+        {"stars": s, "count": n}
+        for s, n in conn.execute(
+            "SELECT star_rating, COUNT(*) FROM properties "
+            "GROUP BY star_rating ORDER BY star_rating"
+        ).fetchall()
+    ]
+    (META_DIR / "stars.json").write_text(
+        json.dumps(stars, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    conn.close()
+    print(f"  meta: {len(cities)} cities, {len(amenities)} amenities, {len(stars)} star groups")
+
+
 def run() -> None:
     print(f"Downloading {SOURCE_URL}...")
     path = download()
@@ -110,6 +160,8 @@ def run() -> None:
     print("Loading into SQLite...")
     n = load_csv_into_db()
     print(f"  inserted {n} rows → {DB_PATH}")
+    print("Exporting meta JSON...")
+    export_meta()
 
 
 if __name__ == "__main__":

@@ -5,6 +5,11 @@ data/*.db
 data/source.csv
 output/images/*
 output/feeds/*
+output/meta/*
 !output/images/.gitkeep
 !output/feeds/.gitkeep
 .DS_Store
+
+# UI secrets — никогда не коммитим
+ui/.streamlit/secrets.toml
+sutochno_feeds.egg-info/
