@@ -35,8 +35,14 @@ GITHUB_REPO = _secret("github_repo")
 GITHUB_BRANCH = _secret("github_branch", "main")
 WORKFLOW_FILE = _secret("workflow_file", "daily.yml")
 META_BASE_URL = _secret("meta_base_url")
+# Feeds live next to meta on the same Pages host.
+FEEDS_BASE_URL = META_BASE_URL.rsplit("/", 1)[0] + "/feeds"
 
 SEGMENTS_PATH = "config/segments.yaml"
+
+
+def feed_url(segment_id: str) -> str:
+    return f"{FEEDS_BASE_URL}/{segment_id}.csv"
 
 
 # ───────────────────────── auth ─────────────────────────
@@ -259,6 +265,15 @@ def render_segment_form(
     cities: list[dict], amenities: list[dict], stars: list[dict],
 ) -> None:
     flt = seg.get("filter", {})
+    seg_id = seg.get("id", "")
+
+    if seg_id:
+        st.markdown("**Ссылка на фид для Яндекс.Директа:**")
+        st.code(feed_url(seg_id), language=None)
+        st.caption(
+            "Скопируй и вставь в Директ → Источники → Фиды. "
+            "Файл появится по этому адресу после первой успешной пересборки сегмента."
+        )
 
     with st.form(f"seg-{idx}"):
         col1, col2 = st.columns(2)
