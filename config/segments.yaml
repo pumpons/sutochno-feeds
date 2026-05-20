@@ -10,8 +10,14 @@ segments:
     min_score: 4.5
   template: premium_gold
   limit: 0
-- id: new-segment-2
-  description: ''
-  filter: {}
+- id: 4-5-stars-pools
+  description: Четырех и пятизвездочные отели с бассейнами
+  filter:
+    min_score: 4.0
+    stars_in:
+    - 4
+    - 5
+    amenities_any:
+    - Бассейн (открытый)
   template: premium_gold
   limit: 0
