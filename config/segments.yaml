@@ -21,3 +21,8 @@ segments:
     - Бассейн (открытый)
   template: premium_gold
   limit: 0
+- id: new-segment-3
+  description: ''
+  filter: {}
+  template: premium_gold
+  limit: 0
