@@ -7,3 +7,4 @@ Requires-Dist: requests>=2.32
 Requires-Dist: pyyaml>=6.0
 Requires-Dist: jinja2>=3.1
 Requires-Dist: playwright>=1.47
+Requires-Dist: Pillow>=10.0

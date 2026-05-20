@@ -1,14 +1,12 @@
-# Each segment produces one output feed at output/feeds/<id>.csv
-# Image renders go to output/images/ keyed by hash and referenced from the feed.
-
-base_image_url: "https://pumpons.github.io/sutochno-feeds/images"
-
+base_image_url: https://pumpons.github.io/sutochno-feeds/images
 segments:
-  - id: sochi-premium
-    description: Сочи + Адлер + Красная Поляна с оценкой ≥ 4.5
-    filter:
-      destination_in: ["Сочи", "Адлер", "Красная Поляна"]
-      min_score: 4.5
-    template: premium_gold
-    # Optional limit for local testing. Remove or set 0 to process all matching rows.
-    limit: 0
+- id: sochi-premium
+  description: Сочи + Адлер + Красная Поляна с оценкой ≥ 4.5
+  filter:
+    destination_in:
+    - Сочи
+    - Адлер
+    - Красная Поляна
+    min_score: 4.5
+  template: premium_gold
+  limit: 0
