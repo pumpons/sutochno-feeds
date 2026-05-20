@@ -194,13 +194,23 @@ def main() -> None:
     st.title("🎛 Пульт фидов")
     st.caption(f"Репозиторий: `{GITHUB_REPO}` · ветка: `{GITHUB_BRANCH}`")
 
+    try:
+        cfg, sha = fetch_segments_file()
+    except Exception as e:
+        st.error(f"Не получилось прочитать segments.yaml: {e}")
+        st.stop()
+
+    segments = cfg.get("segments", [])
+
     # Top status bar
     run = latest_run()
     col_a, col_b = st.columns([3, 1])
     with col_a:
         st.markdown(f"**Последний прогон:** {fmt_run_status(run)}")
-        if run:
-            st.markdown(f"[Открыть на GitHub →]({run.get('html_url')})")
+        segment_ids = [s.get("id") for s in segments if s.get("id")]
+        if segment_ids:
+            feed_links = ", ".join(f"`{sid}.csv`" for sid in segment_ids)
+            st.markdown(f"**Собранные фиды:** {feed_links}")
     with col_b:
         if st.button("🔄 Обновить", help="Перечитать состояние"):
             fetch_segments_file.clear()
@@ -210,13 +220,6 @@ def main() -> None:
 
     st.divider()
 
-    try:
-        cfg, sha = fetch_segments_file()
-    except Exception as e:
-        st.error(f"Не получилось прочитать segments.yaml: {e}")
-        st.stop()
-
-    segments = cfg.get("segments", [])
     cities = load_meta("cities")
     amenities = load_meta("amenities")
     stars = load_meta("stars")
