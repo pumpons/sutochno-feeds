@@ -6,7 +6,9 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
   group: daily-feeds
@@ -16,6 +18,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 240
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -33,29 +38,31 @@ jobs:
       - name: Install Playwright Chromium
         run: python -m playwright install --with-deps chromium
 
-      - name: Restore image cache (last gh-pages snapshot)
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: _gh_pages
-        continue-on-error: true
-
-      - name: Seed local images from prior cache
+      # Cache rendered images between runs, keyed by template+asset fingerprint
+      # so any visual change invalidates the cache cleanly.
+      - name: Compute cache key
+        id: cache-key
         run: |
-          mkdir -p output/images
-          if [ -d _gh_pages/images ]; then
-            cp -a _gh_pages/images/. output/images/ || true
-            echo "Restored $(ls output/images | wc -l) cached images"
-          fi
+          KEY=$(find config/templates -type f | sort | xargs sha1sum | sha1sum | cut -c1-16)
+          echo "key=$KEY" >> "$GITHUB_OUTPUT"
+
+      - name: Restore image cache
+        uses: actions/cache@v4
+        with:
+          path: output/images
+          key: images-${{ steps.cache-key.outputs.key }}
 
       - name: Run pipeline
         run: python -m src.pipeline
 
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./output
-          force_orphan: true   # fresh orphan commit each deploy; smaller push, no history bloat
-          commit_message: "Daily rebuild ${{ github.run_number }}"
+          path: ./output
+
+      - name: Deploy
+        id: deploy
+        uses: actions/deploy-pages@v4
