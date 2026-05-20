@@ -57,5 +57,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ./output
-          keep_files: false   # full snapshot each run; old unused images are dropped
+          force_orphan: true   # fresh orphan commit each deploy; smaller push, no history bloat
           commit_message: "Daily rebuild ${{ github.run_number }}"
