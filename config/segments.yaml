@@ -10,8 +10,3 @@ segments:
     min_score: 4.5
   template: premium_gold
   limit: 0
-- id: new-segment-2
-  description: ''
-  filter: {}
-  template: premium_gold
-  limit: 0
