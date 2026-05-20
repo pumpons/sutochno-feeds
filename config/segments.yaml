@@ -21,8 +21,10 @@ segments:
     - Бассейн (открытый)
   template: premium_gold
   limit: 0
-- id: new-segment-3
-  description: ''
-  filter: {}
+- id: ulyanovsk-hotels
+  description: Все отели из Ульяновска
+  filter:
+    destination_in:
+    - Ульяновск
   template: premium_gold
   limit: 0
