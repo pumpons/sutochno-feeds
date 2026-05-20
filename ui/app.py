@@ -296,6 +296,13 @@ def render_segment_form(
                 value=int(seg.get("limit", 0)), min_value=0, step=100,
                 help="Для тестовых прогонов",
             )
+            new_dedupe = st.checkbox(
+                "Объединять варианты одного объекта",
+                value=bool(seg.get("dedupe_by_url", True)),
+                help="В исходном фиде сутки.ру один отель часто разбит на несколько строк "
+                     "(разные комнаты/тарифы). Если включено — оставляем одну строку на отель "
+                     "с минимальной ценой. Если выключено — все варианты идут в фид как есть.",
+            )
 
         st.markdown("**Фильтры**")
 
@@ -383,6 +390,7 @@ def render_segment_form(
                 "filter": new_filter,
                 "template": new_template,
                 "limit": int(new_limit),
+                "dedupe_by_url": bool(new_dedupe),
             }
             cfg["segments"][idx] = updated
 

@@ -64,16 +64,45 @@ def select_rows(conn: sqlite3.Connection, flt: dict, limit: int = 0) -> list[sql
     return conn.execute(sql, params).fetchall()
 
 
+def dedupe_by_url(rows: list[sqlite3.Row]) -> list[sqlite3.Row]:
+    """Keep one row per Final URL, choosing the lowest-priced variant.
+    sutochno's feed has multiple rows per hotel (one per room type/rate);
+    for ad creatives we want one row per hotel page."""
+    by_url: dict[str, sqlite3.Row] = {}
+    for r in rows:
+        url = r["final_url"] or r["property_id"]  # fallback so missing URLs don't collapse
+        existing = by_url.get(url)
+        if existing is None:
+            by_url[url] = r
+            continue
+        new_price = r["price"] if r["price"] is not None else float("inf")
+        old_price = existing["price"] if existing["price"] is not None else float("inf")
+        if new_price < old_price:
+            by_url[url] = r
+    return list(by_url.values())
+
+
 def build(segment: dict, base_image_url: str) -> Path:
     seg_id = segment["id"]
     template = segment["template"]
     limit = segment.get("limit", 0)
+    dedupe = segment.get("dedupe_by_url", True)
 
     print(f"\n[segment {seg_id}]")
     conn = sqlite3.connect(DB_PATH)
-    rows = select_rows(conn, segment.get("filter", {}), limit=limit)
+    # Apply LIMIT after dedupe so it counts unique objects, not raw rows.
+    raw_rows = select_rows(conn, segment.get("filter", {}), limit=0)
     conn.close()
-    print(f"  matched: {len(rows)} rows")
+    if dedupe:
+        before = len(raw_rows)
+        rows = dedupe_by_url(raw_rows)
+        print(f"  matched: {before} rows → {len(rows)} unique objects (dedupe by URL)")
+    else:
+        rows = raw_rows
+        print(f"  matched: {len(rows)} rows")
+    if limit:
+        rows = rows[:limit]
+        print(f"  limited to {len(rows)}")
 
     if not rows:
         print("  nothing to do")
