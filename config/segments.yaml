@@ -28,8 +28,11 @@ segments:
     - Ульяновск
   template: premium_gold
   limit: 0
-- id: new-segment-4
-  description: ''
-  filter: {}
+- id: spb-all-hotels
+  description: Все отели Питера
+  filter:
+    destination_in:
+    - Санкт-Петербург
   template: premium_gold
   limit: 0
+  dedupe_by_url: true
