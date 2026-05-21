@@ -141,7 +141,7 @@ def build(segment: dict, base_image_url: str) -> Path:
                 r["raw_price"],
                 r["star_rating"],
                 r["score"],
-                r["max_score"],
+                int(r["max_score"]) if r["max_score"] is not None else "",
                 r["facilities"],
             ])
 
