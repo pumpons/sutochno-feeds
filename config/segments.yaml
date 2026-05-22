@@ -48,3 +48,8 @@ segments:
   template: smart_banner_01
   limit: 0
   dedupe_by_url: true
+- id: new-segment-6
+  description: ''
+  filter: {}
+  template: premium_gold
+  limit: 0
