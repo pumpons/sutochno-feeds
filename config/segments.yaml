@@ -19,8 +19,9 @@ segments:
     - 5
     amenities_any:
     - Бассейн (открытый)
-  template: premium_gold
+  template: smart_banner_01
   limit: 0
+  dedupe_by_url: true
 - id: ulyanovsk-hotels
   description: Все отели из Ульяновска
   filter:
