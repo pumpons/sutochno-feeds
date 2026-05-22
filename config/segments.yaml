@@ -48,8 +48,15 @@ segments:
   template: smart_banner_01
   limit: 0
   dedupe_by_url: true
-- id: new-segment-6
+- id: test-jubga-smart-2
   description: ''
-  filter: {}
-  template: premium_gold
+  filter:
+    destination_in:
+    - Джубга
+    stars_in:
+    - 3
+    - 4
+    - 5
+  template: smart_banner_02
   limit: 0
+  dedupe_by_url: true
