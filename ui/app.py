@@ -285,11 +285,18 @@ def render_segment_form(
                                    help="латиницей, без пробелов — войдёт в имя выходного файла")
             new_desc = st.text_input("Описание", value=seg.get("description", ""))
         with col2:
-            templates = ["premium_gold"]  # пока один; в Этапе 2 будут несколько
+            template_labels = {
+                "smart_banner_01": "Smart Banner 01 — имиджевый (фото + кэшбек + лого)",
+                "smart_banner_02": "Smart Banner 02 — карточка приложения (с городом)",
+                "smart_banner_03": "Smart Banner 03 — карточка с рейтингом",
+                "premium_gold": "Premium Gold — старый шаблон (красная рамка)",
+            }
+            templates = list(template_labels.keys())
             new_template = st.selectbox(
                 "Шаблон креатива",
                 templates,
                 index=templates.index(seg["template"]) if seg.get("template") in templates else 0,
+                format_func=lambda k: template_labels.get(k, k),
             )
             new_limit = st.number_input(
                 "Лимит объектов (0 = без лимита)",
