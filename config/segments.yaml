@@ -94,8 +94,15 @@ segments:
   template: smart_banner_04
   limit: 0
   dedupe_by_url: true
-- id: new-segment-9
+- id: test-jubga-smart-5
   description: ''
-  filter: {}
-  template: premium_gold
+  filter:
+    stars_in:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+  template: smart_banner_05
   limit: 0
+  dedupe_by_url: true
