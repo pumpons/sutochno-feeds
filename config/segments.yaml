@@ -54,7 +54,10 @@ segments:
   filter:
     destination_in:
     - Джубга
+    - Ейск
     stars_in:
+    - 1
+    - 2
     - 3
     - 4
     - 5
