@@ -79,7 +79,7 @@ segments:
   template: smart_banner_03
   limit: 0
   dedupe_by_url: true
-- id: test-jubga-smart-3
+- id: test-jubga-smart-4
   description: ''
   filter:
     destination_in:
