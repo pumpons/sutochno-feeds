@@ -289,6 +289,8 @@ def render_segment_form(
                 "smart_banner_01": "Smart Banner 01 — имиджевый (фото + кэшбек + лого)",
                 "smart_banner_02": "Smart Banner 02 — карточка приложения (с городом)",
                 "smart_banner_03": "Smart Banner 03 — карточка с рейтингом",
+                "smart_banner_04": "Smart Banner 04 — фото на весь экран + город + цена",
+                "smart_banner_05": "Smart Banner 05 — фото на весь экран + рейтинг + цена",
                 "premium_gold": "Premium Gold — старый шаблон (красная рамка)",
             }
             templates = list(template_labels.keys())

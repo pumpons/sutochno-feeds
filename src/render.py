@@ -71,7 +71,7 @@ class RenderJob:
         return hashlib.sha1(payload).hexdigest()[:16]
 
     def output_path(self) -> Path:
-        return IMAGES_DIR / f"{self.cache_key()}.png"
+        return IMAGES_DIR / f"{self.cache_key()}.jpg"
 
 
 def _render_one(browser, job: RenderJob) -> None:
@@ -85,9 +85,9 @@ def _render_one(browser, job: RenderJob) -> None:
         hires_bytes = page.screenshot(type="png")
     finally:
         context.close()
-    img = Image.open(BytesIO(hires_bytes))
+    img = Image.open(BytesIO(hires_bytes)).convert("RGB")
     img = img.resize((VIEWPORT["width"], VIEWPORT["height"]), Image.LANCZOS)
-    img.save(job.output_path(), "PNG", optimize=True)
+    img.save(job.output_path(), "JPEG", quality=85, optimize=True, progressive=True)
 
 
 def _worker(queue: Queue, errors: list, done: list[int], lock: threading.Lock, total: int) -> None:

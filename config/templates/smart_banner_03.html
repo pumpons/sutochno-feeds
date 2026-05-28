@@ -38,29 +38,18 @@
     background-size: cover;
     background-position: center;
   }
-  .card .heart {
-    position: absolute; left: 585px; top: 20px;
-    width: 88px; height: 88px;
-  }
-  .card .heart img { width: 100%; height: 100%; display: block; }
-
-  .card .circles {
-    position: absolute; left: 310px; top: 510px;
-    width: 149px; height: 26px;
-  }
-  .card .circles img { width: 100%; height: 100%; display: block; }
 
   .card .cashback {
-    position: absolute; left: 78px; top: 39px;
-    width: 435px; height: 56px;
+    position: absolute; left: 87px; top: 42px;
+    width: 481px; height: 63px;
   }
   .card .cashback img { width: 100%; height: 100%; display: block; }
 
   .card .rating {
-    position: absolute; left: 796px; top: 42px;
+    position: absolute; left: 778px; top: 42px;
     width: 165px; height: 83px;
     background: #32a07c;
-    border-radius: 166px;
+    border-radius: 42px;
     display: flex; align-items: center; justify-content: center; gap: 6px;
     color: #fff;
     font-family: 'Inter', -apple-system, Arial, sans-serif;
@@ -70,15 +59,13 @@
   }
   .card .rating .star { width: 47px; height: 47px; flex-shrink: 0; }
   .card .rating .star img { width: 100%; height: 100%; display: block; }
-  .card .rating .score-text {
-    padding-top: 2px;
-  }
+  .card .rating .score-text { padding-top: 2px; }
 
   .card .price-pill {
     position: absolute; left: 637px; top: 488px;
     width: 305px; height: 87px;
     background: #fff;
-    border-radius: 60px;
+    border-radius: 44px;
     display: flex; align-items: center; justify-content: center;
     color: #000;
     font-weight: 600;
@@ -101,17 +88,13 @@
 </style>
 </head><body>
   <div class="bg"></div>
-
   <div class="logo"><img src="{{ b03_logo }}" alt=""></div>
-
   <div class="card">
     <div class="photo"></div>
-    <div class="cashback"><img src="{{ b02_cashback }}" alt=""></div>
-    <div class="heart"><img src="{{ b02_heart }}" alt=""></div>
-    <div class="circles"><img src="{{ b02_circles }}" alt=""></div>
+    <div class="cashback"><img src="{{ b_cashback }}" alt=""></div>
     {% if score and score|float > 0 %}
     <div class="rating">
-      <div class="star"><img src="{{ b03_star }}" alt=""></div>
+      <div class="star"><img src="{{ b_star }}" alt=""></div>
       <div class="score-text">{{ "%.1f"|format(score|float) | replace(".", ",") }}</div>
     </div>
     {% endif %}
@@ -119,6 +102,5 @@
       {%- if price is number -%}от {{ price|int }}₽{%- else -%}{{ price }}{%- endif -%}
     </div>
   </div>
-
   <div class="name">{{ name }}</div>
 </body></html>
