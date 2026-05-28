@@ -91,7 +91,7 @@ segments:
     - 3
     - 4
     - 5
-  template: premium_gold
+  template: smart_banner_04
   limit: 0
   dedupe_by_url: true
 - id: new-segment-9
