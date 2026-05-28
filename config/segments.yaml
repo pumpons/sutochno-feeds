@@ -79,8 +79,18 @@ segments:
   template: smart_banner_03
   limit: 0
   dedupe_by_url: true
-- id: new-segment-8
+- id: test-jubga-smart-3
   description: ''
-  filter: {}
+  filter:
+    destination_in:
+    - Джубга
+    - Ейск
+    stars_in:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
   template: premium_gold
   limit: 0
+  dedupe_by_url: true
