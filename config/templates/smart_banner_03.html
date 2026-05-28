@@ -46,11 +46,12 @@
   .card .cashback img { width: 100%; height: 100%; display: block; }
 
   .card .rating {
-    position: absolute; left: 778px; top: 42px;
-    width: 165px; height: 83px;
+    position: absolute; right: 82px; top: 42px;
+    height: 83px;
+    padding: 0 24px;
     background: #32a07c;
-    border-radius: 42px;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border-radius: 1000px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     color: #fff;
     font-family: 'Inter', -apple-system, Arial, sans-serif;
     font-weight: 600;
@@ -59,31 +60,37 @@
   }
   .card .rating .star { width: 47px; height: 47px; flex-shrink: 0; }
   .card .rating .star img { width: 100%; height: 100%; display: block; }
-  .card .rating .score-text { padding-top: 2px; }
+  .card .rating .score-text { padding-top: 2px; white-space: nowrap; }
 
   .card .price-pill {
-    position: absolute; left: 637px; top: 488px;
-    width: 305px; height: 87px;
+    position: absolute; right: 83px; top: 488px;
+    height: 87px;
+    padding: 0 36px;
     background: #fff;
-    border-radius: 44px;
-    display: flex; align-items: center; justify-content: center;
+    border-radius: 1000px;
+    display: inline-flex; align-items: center; justify-content: center;
     color: #000;
     font-weight: 600;
     font-size: 53px;
     line-height: 1;
+    white-space: nowrap;
   }
 
   .name {
-    position: absolute; left: 316px; top: 944px;
-    width: 567px;
+    position: absolute; left: 87px; top: 920px;
+    width: 1025px;
     text-align: left;
     font-weight: 300;
     font-size: 61px;
     line-height: 1.1;
     color: #fff;
-    white-space: nowrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    /* keep at most 3 lines visually within frame */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 </style>
 </head><body>

@@ -27,10 +27,13 @@
 
   .rating {
     position: absolute; left: 174px; top: 520px;
-    width: 125px; height: 62px;
+    height: 62px;
+    padding: 0 18px;
     background: #32a07c;
-    border-radius: 31px;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-radius: 1000px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
     color: #fff;
     font-family: 'Inter', -apple-system, Arial, sans-serif;
     font-weight: 600;
@@ -39,35 +42,43 @@
   }
   .rating .star { width: 35px; height: 35px; flex-shrink: 0; }
   .rating .star img { width: 100%; height: 100%; display: block; }
-  .rating .score-text { padding-top: 2px; }
+  .rating .score-text { padding-top: 2px; white-space: nowrap; }
 
   .price-pill {
     position: absolute; left: 174px; top: 617px;
-    width: 219px; height: 63px;
+    height: 63px;
+    padding: 0 22px;
     background: #000;
-    border-radius: 31px;
-    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 1000px;
+    display: inline-flex; align-items: center; justify-content: center;
     color: #fff;
     font-weight: 600;
     font-size: 38px;
     line-height: 1;
+    white-space: nowrap;
   }
 
   .name-pill {
     position: absolute; left: 174px; top: 714px;
-    width: 421px; height: 63px;
+    max-width: 852px;
+    min-height: 63px;
+    padding: 12px 22px;
     background: #fff;
-    border-radius: 31px;
-    display: flex; align-items: center; justify-content: center;
-    padding: 0 21px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
     color: #000;
     font-weight: 600;
     font-size: 38px;
-    line-height: 1;
+    line-height: 1.2;
   }
   .name-pill .name-text {
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    text-align: center; width: 100%;
+    text-align: center;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 </style>
 </head><body>

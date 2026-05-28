@@ -39,25 +39,29 @@
   }
   .card .cashback img { width: 100%; height: 100%; display: block; }
 
+  /* Pills row at bottom of card: city pill (left) and price pill (right) */
   .card .price-pill {
-    position: absolute; left: 636px; top: 517px;
-    width: 305px; height: 87px;
+    position: absolute; right: 84px; top: 517px;
+    height: 87px;
+    padding: 0 36px;
     background: #fff;
-    border-radius: 44px;
-    display: flex; align-items: center; justify-content: center;
+    border-radius: 1000px;
+    display: inline-flex; align-items: center; justify-content: center;
     color: #000;
     font-weight: 600;
     font-size: 53px;
     line-height: 1;
+    white-space: nowrap;
   }
 
   .card .city-pill {
     position: absolute; left: 89px; top: 515px;
-    width: 297px; height: 90px;
-    background: #fff;
-    border-radius: 45px;
-    display: flex; align-items: center; gap: 14px;
+    max-width: 530px;
+    height: 90px;
     padding: 0 30px;
+    background: #fff;
+    border-radius: 1000px;
+    display: inline-flex; align-items: center; gap: 14px;
     color: #000;
     font-weight: 400;
     font-size: 48px;
@@ -70,13 +74,15 @@
   }
 
   .name {
-    position: absolute; left: 218px; top: 898px;
-    width: 761px;
+    position: absolute; left: 60px; top: 880px;
+    width: 1080px;
     text-align: center;
     font-weight: 700;
     font-size: 64px;
     line-height: 1.1;
     color: #fff;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 </style>
 </head><body>

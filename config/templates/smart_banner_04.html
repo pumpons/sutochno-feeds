@@ -20,22 +20,35 @@
   }
 
   .cashback {
-    position: absolute; left: 359px; top: 494px;
+    position: absolute; left: 50%; top: 494px;
+    transform: translateX(-50%);
     width: 481px; height: 63px;
   }
   .cashback img { width: 100%; height: 100%; display: block; }
 
-  .city-pill {
-    position: absolute; left: 292px; top: 575px;
-    width: 297px; height: 90px;
-    background: #fff;
-    border-radius: 45px;
-    display: flex; align-items: center; gap: 14px;
-    padding: 0 30px;
+  /* Pills row centered horizontally below cashback */
+  .pills-row {
+    position: absolute; left: 50%; top: 575px;
+    transform: translateX(-50%);
+    display: inline-flex; gap: 14px;
+    max-width: 1100px;
+  }
+
+  .city-pill, .price-pill {
+    height: 90px;
+    background: rgba(255,255,255,0.54);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-radius: 1000px;
+    display: inline-flex; align-items: center;
     color: #000;
+    line-height: 1;
+  }
+  .city-pill {
+    padding: 0 30px;
+    gap: 14px;
     font-weight: 400;
     font-size: 48px;
-    line-height: 1;
   }
   .city-pill .geo { width: 29px; height: 39px; flex-shrink: 0; }
   .city-pill .geo img { width: 100%; height: 100%; display: block; }
@@ -44,37 +57,37 @@
   }
 
   .price-pill {
-    position: absolute; left: 603px; top: 576px;
-    width: 305px; height: 87px;
-    background: #fff;
-    border-radius: 44px;
-    display: flex; align-items: center; justify-content: center;
-    color: #000;
+    padding: 0 36px;
+    justify-content: center;
     font-weight: 600;
     font-size: 53px;
-    line-height: 1;
+    white-space: nowrap;
   }
 
   .name {
-    position: absolute; left: 215px; top: 685px;
-    width: 771px;
+    position: absolute; left: 60px; top: 690px;
+    width: 1080px;
     text-align: center;
     font-weight: 700;
     font-size: 64px;
     line-height: 1.1;
     color: #fff;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.55);
+    text-shadow: 0 4px 16px rgba(0,0,0,0.7), 0 2px 6px rgba(0,0,0,0.5);
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 </style>
 </head><body>
   <div class="photo"></div>
   <div class="cashback"><img src="{{ b_cashback }}" alt=""></div>
-  <div class="city-pill">
-    <div class="geo"><img src="{{ b_geo }}" alt=""></div>
-    <div class="city-text">{{ destination }}</div>
-  </div>
-  <div class="price-pill">
-    {%- if price is number -%}от {{ price|int }}₽{%- else -%}{{ price }}{%- endif -%}
+  <div class="pills-row">
+    <div class="city-pill">
+      <div class="geo"><img src="{{ b_geo }}" alt=""></div>
+      <div class="city-text">{{ destination }}</div>
+    </div>
+    <div class="price-pill">
+      {%- if price is number -%}от {{ price|int }}₽{%- else -%}{{ price }}{%- endif -%}
+    </div>
   </div>
   <div class="name">{{ name }}</div>
 </body></html>
