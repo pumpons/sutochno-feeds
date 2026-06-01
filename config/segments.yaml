@@ -109,3 +109,8 @@ segments:
   template: smart_banner_05
   limit: 0
   dedupe_by_url: true
+- id: new-segment-10
+  description: ''
+  filter: {}
+  template: premium_gold
+  limit: 0
