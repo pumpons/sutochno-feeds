@@ -1,17 +1,5 @@
 base_image_url: https://pumpons.github.io/sutochno-feeds/images
 segments:
-- id: 4-5-stars-pools
-  description: Четырех и пятизвездочные отели с бассейнами
-  filter:
-    min_score: 4.0
-    stars_in:
-    - 4
-    - 5
-    amenities_any:
-    - Бассейн (открытый)
-  template: smart_banner_01
-  limit: 0
-  dedupe_by_url: true
 - id: ulyanovsk-hotels
   description: Все отели из Ульяновска
   filter:
