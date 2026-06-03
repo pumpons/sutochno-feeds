@@ -175,6 +175,8 @@ def segment_summary(seg: dict) -> str:
     parts = []
     if dests := f.get("destination_in"):
         parts.append(f"📍 {', '.join(dests[:3])}{'…' if len(dests) > 3 else ''}")
+    if dests_out := f.get("destination_not_in"):
+        parts.append(f"🚫 {', '.join(dests_out[:3])}{'…' if len(dests_out) > 3 else ''}")
     if (ms := f.get("min_score")) is not None:
         parts.append(f"⭐ ≥ {ms}")
     if stars := f.get("stars_in"):
@@ -320,11 +322,19 @@ def render_segment_form(
         city_labels = {c["name"]: f"{c['name']} ({c['count']})" for c in cities}
         current_cities = [c for c in (flt.get("destination_in") or []) if c in city_names]
         new_cities = st.multiselect(
-            "Города",
+            "Города (включить)",
             options=city_names,
             default=current_cities,
             format_func=lambda x: city_labels.get(x, x),
             help="Выбери один или несколько; пусто = все города",
+        )
+        current_cities_out = [c for c in (flt.get("destination_not_in") or []) if c in city_names]
+        new_cities_out = st.multiselect(
+            "Города (исключить)",
+            options=city_names,
+            default=current_cities_out,
+            format_func=lambda x: city_labels.get(x, x),
+            help="Объекты из этих городов НЕ попадут в фид. Полезно для «все города кроме X».",
         )
 
         # Score
@@ -382,6 +392,8 @@ def render_segment_form(
             new_filter: dict[str, Any] = {}
             if new_cities:
                 new_filter["destination_in"] = new_cities
+            if new_cities_out:
+                new_filter["destination_not_in"] = new_cities_out
             if new_min_score > 0:
                 new_filter["min_score"] = round(new_min_score, 2)
             if new_stars:

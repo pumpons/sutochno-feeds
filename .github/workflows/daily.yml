@@ -17,7 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 350
+    env:
+      RENDER_CONCURRENCY: "8"
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}

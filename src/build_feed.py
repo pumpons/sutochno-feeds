@@ -33,6 +33,10 @@ def select_rows(conn: sqlite3.Connection, flt: dict, limit: int = 0) -> list[sql
         placeholders = ",".join("?" for _ in dests)
         where.append(f"destination IN ({placeholders})")
         params.extend(dests)
+    if dests_out := flt.get("destination_not_in"):
+        placeholders = ",".join("?" for _ in dests_out)
+        where.append(f"destination NOT IN ({placeholders})")
+        params.extend(dests_out)
     if (min_score := flt.get("min_score")) is not None:
         where.append("score >= ?")
         params.append(min_score)
