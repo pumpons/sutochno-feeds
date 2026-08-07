@@ -89,8 +89,3 @@ segments:
   filter: {}
   template: premium_gold
   limit: 0
-- id: new-segment-9
-  description: ''
-  filter: {}
-  template: premium_gold
-  limit: 0
