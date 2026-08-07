@@ -84,8 +84,9 @@ segments:
   template: smart_banner_04
   limit: 0
   dedupe_by_url: true
-- id: new-segment-8
+- id: all-hotels-kreo05
   description: ''
   filter: {}
-  template: premium_gold
+  template: smart_banner_05
   limit: 0
+  dedupe_by_url: true
