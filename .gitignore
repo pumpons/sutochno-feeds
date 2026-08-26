@@ -13,3 +13,6 @@ output/meta/*
 # UI secrets — никогда не коммитим
 ui/.streamlit/secrets.toml
 sutochno_feeds.egg-info/
+
+# кэш скачанных фото отелей (только внутри прогона)
+data/photo_cache/

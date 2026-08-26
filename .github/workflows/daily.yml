@@ -20,6 +20,10 @@ jobs:
     timeout-minutes: 350
     env:
       RENDER_CONCURRENCY: "8"
+      # Stop rendering well before timeout-minutes so the job always gets to
+      # publish the feeds and save its image cache. Whatever is left over is
+      # picked up by the next run, which starts from the warm cache.
+      RENDER_DEADLINE_MINUTES: "260"
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
@@ -32,6 +36,9 @@ jobs:
           python-version: "3.12"
           cache: pip
 
+      - name: Show runner size
+        run: echo "cores=$(nproc) ram=$(free -g | awk '/^Mem:/{print $2}')GB"
+
       - name: Install package
         run: |
           python -m pip install --upgrade pip
@@ -40,22 +47,41 @@ jobs:
       - name: Install Playwright Chromium
         run: python -m playwright install --with-deps chromium
 
-      # Cache rendered images between runs, keyed by template+asset fingerprint
-      # so any visual change invalidates the cache cleanly.
+      # Cache rendered images between runs, keyed by template+asset+renderer
+      # fingerprint so any visual change invalidates the cache cleanly.
       - name: Compute cache key
         id: cache-key
         run: |
-          KEY=$(find config/templates -type f | sort | xargs sha1sum | sha1sum | cut -c1-16)
+          KEY=$(find config/templates -type f | sort | xargs sha1sum | \
+                cat - src/render.py | sha1sum | cut -c1-16)
           echo "key=$KEY" >> "$GITHUB_OUTPUT"
 
+      # Restore/save are split, and the key carries the run id, because a fixed
+      # key is never overwritten — that silently froze the cache for months.
       - name: Restore image cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: output/images
-          key: images-${{ steps.cache-key.outputs.key }}
+          key: images-${{ steps.cache-key.outputs.key }}-${{ github.run_id }}
+          restore-keys: |
+            images-${{ steps.cache-key.outputs.key }}-
 
       - name: Run pipeline
         run: python -m src.pipeline
+
+      - name: Report output size
+        if: always()
+        run: |
+          echo "images: $(ls output/images | wc -l) files, $(du -sh output/images | cut -f1)"
+          echo "feeds:"; wc -l output/feeds/*.csv || true
+
+      # Runs even if the pipeline failed, so a partial render is never thrown away.
+      - name: Save image cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: output/images
+          key: images-${{ steps.cache-key.outputs.key }}-${{ github.run_id }}
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

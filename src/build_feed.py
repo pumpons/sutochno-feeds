@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import sqlite3
+from dataclasses import dataclass
 from pathlib import Path
 
 from .render import RenderJob, render_jobs
@@ -86,7 +87,17 @@ def dedupe_by_url(rows: list[sqlite3.Row]) -> list[sqlite3.Row]:
     return list(by_url.values())
 
 
-def build(segment: dict, base_image_url: str) -> Path:
+@dataclass
+class SegmentPlan:
+    """A segment's selected rows and the render jobs they need.
+    Planning is split from writing so the pipeline can render every segment's
+    images in one interleaved pass instead of one segment at a time."""
+    segment: dict
+    rows: list
+    jobs: list
+
+
+def plan(segment: dict) -> SegmentPlan:
     seg_id = segment["id"]
     template = segment["template"]
     limit = segment.get("limit", 0)
@@ -108,10 +119,6 @@ def build(segment: dict, base_image_url: str) -> Path:
         rows = rows[:limit]
         print(f"  limited to {len(rows)}")
 
-    if not rows:
-        print("  nothing to do")
-        return FEEDS_DIR / f"{seg_id}.csv"
-
     jobs = [
         RenderJob(
             property_id=r["property_id"],
@@ -126,15 +133,29 @@ def build(segment: dict, base_image_url: str) -> Path:
         )
         for r in rows
     ]
-    image_paths = render_jobs(jobs)
+    return SegmentPlan(segment=segment, rows=rows, jobs=jobs)
 
+
+def write(sp: SegmentPlan, image_paths: dict, base_image_url: str) -> Path:
+    seg_id = sp.segment["id"]
     FEEDS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = FEEDS_DIR / f"{seg_id}.csv"
+
+    if not sp.rows:
+        print(f"[segment {seg_id}] nothing to do")
+        return out_path
+
+    dropped = 0
     with out_path.open("w", encoding="utf-8", newline="") as f:
         w = csv.writer(f, quoting=csv.QUOTE_MINIMAL)
         w.writerow(OUTPUT_COLUMNS)
-        for r in rows:
-            img_local = image_paths[r["property_id"]]
+        for r in sp.rows:
+            # A render that failed or did not run has no file; keeping the row
+            # would point the ad platform at a 404, so drop it from the feed.
+            img_local = image_paths.get((r["property_id"], sp.segment["template"]))
+            if img_local is None:
+                dropped += 1
+                continue
             img_url = f"{base_image_url.rstrip('/')}/{img_local.name}"
             w.writerow([
                 r["property_id"],
@@ -149,5 +170,15 @@ def build(segment: dict, base_image_url: str) -> Path:
                 r["facilities"],
             ])
 
-    print(f"  wrote {out_path} ({out_path.stat().st_size / 1024:.1f} KB)")
+    written = len(sp.rows) - dropped
+    if dropped:
+        print(f"[segment {seg_id}] dropped {dropped} rows with no rendered image")
+    print(f"[segment {seg_id}] wrote {out_path} — {written} rows "
+          f"({out_path.stat().st_size / 1024:.1f} KB)")
     return out_path
+
+
+def build(segment: dict, base_image_url: str) -> Path:
+    """Plan, render and write one segment on its own (used by --segment runs)."""
+    sp = plan(segment)
+    return write(sp, render_jobs(sp.jobs), base_image_url)
